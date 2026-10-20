@@ -16,7 +16,7 @@ const sourceSans = Source_Sans_3({
 });
 
 export const metadata: Metadata = {
-  title: "Welland Valley Art Society — Stewarding Rosta",
+  title: "Welland Valley Art Society — Stewarding Rota",
   description: "Exhibition stewarding rota for the Welland Valley Art Society.",
 };
 
@@ -29,7 +29,7 @@ const TABS = [
 ];
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const commitSha = process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA?.substring(0, 7) || "dev";
+  const commitSha = process.env.NEXT_PUBLIC_COMMIT_SHA?.substring(0, 7) || "dev";
 
   return (
     <html lang="en" data-theme="gallery" className={`${playfair.variable} ${sourceSans.variable}`} suppressHydrationWarning>
