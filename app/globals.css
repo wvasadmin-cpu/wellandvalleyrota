@@ -43,3 +43,13 @@
 .font-display {
   font-family: var(--font-playfair), Georgia, serif;
 }
+
+/* Phone numbers are tap-to-call on phones, plain text on computers (where a
+   tel: link would open FaceTime or similar). */
+@media (hover: hover) and (pointer: fine) {
+  .tel-link {
+    pointer-events: none;
+    text-decoration: none;
+    color: inherit;
+  }
+}

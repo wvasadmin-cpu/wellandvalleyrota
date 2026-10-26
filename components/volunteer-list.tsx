@@ -20,7 +20,7 @@ export default function VolunteerList({
           {showPhones && v.phone && (
             <div className="text-sm text-base-content/70 mb-1.5">
               {/\d{5}/.test(v.phone.replace(/\s/g, "")) ? (
-                <a href={`tel:${v.phone.replace(/[^\d+]/g, "")}`} className="hover:underline">
+                <a href={`tel:${v.phone.replace(/[^\d+]/g, "")}`} className="tel-link underline decoration-dotted">
                   {formatPhone(v.phone)}
                 </a>
               ) : (
