@@ -1,6 +1,5 @@
 import { listExhibitions, getActiveExhibition } from "@/lib/exhibitions";
 import { listBookings } from "@/lib/bookings";
-import { formatPhone } from "@/lib/format";
 import {
   getExhibitionDates,
   getSpecialDay,
@@ -131,11 +130,6 @@ export default async function OverviewPage() {
                                 {booked.map(p => (
                                   <div key={p.id} className="text-xs">
                                     {p.name}
-                                    {p.phone && (
-                                      <span className="text-base-content/45">
-                                        {" "}· {formatPhone(p.phone)}
-                                      </span>
-                                    )}
                                   </div>
                                 ))}
                                 {booked.length < REQUIRED_PER_SLOT && (

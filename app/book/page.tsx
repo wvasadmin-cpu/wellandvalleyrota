@@ -23,6 +23,7 @@ export default async function BookPage() {
     );
   }
 
-  const bookings = await listBookings(active.id);
+  // Phone numbers stay on the server — they're only shown on the Contacts tab.
+  const bookings = (await listBookings(active.id)).map(b => ({ ...b, phone: "" }));
   return <BookAShift exhibition={active} bookings={bookings} />;
 }

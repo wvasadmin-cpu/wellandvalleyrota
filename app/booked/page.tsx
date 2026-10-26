@@ -1,17 +1,9 @@
 import { listExhibitions, getActiveExhibition } from "@/lib/exhibitions";
 import { listBookings } from "@/lib/bookings";
-import { formatPhone } from "@/lib/format";
-import {
-  getExhibitionDates,
-  getSpecialDay,
-  isDayClosed,
-  isoDate,
-  fmtLong,
-  type SpecialDaySlotNote,
-} from "@/lib/rota-config";
-import { SHIFTS } from "@/lib/shifts";
+import { listVolunteers } from "@/lib/volunteers";
 import { isHoldingNow } from "@/lib/holding";
 import HoldingPage from "@/components/holding-page";
+import VolunteerList from "@/components/volunteer-list";
 
 export default async function BookedPage() {
   if (await isHoldingNow()) return <HoldingPage />;
@@ -30,43 +22,11 @@ export default async function BookedPage() {
     );
   }
 
-  const bookings = await listBookings(active.id);
-  const dates    = getExhibitionDates(active.startDate, active.endDate);
+  // Phone numbers stay on the server — they're only shown on the Contacts tab.
+  const volunteers = listVolunteers(active, await listBookings(active.id))
+    .map(v => ({ ...v, phone: "" }));
 
-  // Aggregate volunteers: one entry per unique name+phone with all their shifts.
-  type PersonEntry = {
-    name:   string;
-    phone:  string;
-    shifts: { date: Date; shiftLabel: string }[];
-  };
-  const people: Record<string, PersonEntry> = {};
-
-  dates.forEach(d => {
-    if (isDayClosed(d, active.startDate)) return;
-    const dk = isoDate(d);
-    SHIFTS.forEach(shift => {
-      const sp = getSpecialDay(d, active.startDate);
-      if (
-        sp?.type === "slot-note" &&
-        sp.shiftId === shift.id &&
-        (sp as SpecialDaySlotNote).noBook
-      ) return;
-
-      bookings
-        .filter(b => b.date === dk && b.shiftId === shift.id)
-        .forEach(b => {
-          const key = b.name.trim().toLowerCase();
-          if (!people[key]) {
-            people[key] = { name: b.name.trim(), phone: b.phone.trim(), shifts: [] };
-          }
-          people[key].shifts.push({ date: d, shiftLabel: shift.label });
-        });
-    });
-  });
-
-  const entries = Object.values(people);
-
-  if (entries.length === 0) {
+  if (volunteers.length === 0) {
     return (
       <div>
         <h2 className="font-display text-2xl text-primary mb-2">
@@ -76,19 +36,6 @@ export default async function BookedPage() {
       </div>
     );
   }
-
-  // Sort alphabetically: surname first, then first name.
-  const surname = (n: string) =>
-    n.trim().split(/\s+/).slice(-1)[0].toLowerCase();
-  const firstName = (n: string) =>
-    n.trim().split(/\s+/)[0].toLowerCase();
-
-  entries.sort((a, b) => {
-    const sa = surname(a.name),   sb = surname(b.name);
-    if (sa !== sb) return sa < sb ? -1 : 1;
-    return firstName(a.name) < firstName(b.name) ? -1 : 1;
-  });
-  entries.forEach(e => e.shifts.sort((a, b) => a.date.getTime() - b.date.getTime()));
 
   return (
     <div>
@@ -102,29 +49,10 @@ export default async function BookedPage() {
       )}
       <p className="text-sm text-base-content mb-6">
         All volunteers who have committed, listed alphabetically by surname.
+        Phone numbers are on the <strong>Contacts</strong> tab.
       </p>
 
-      <div className="divide-y divide-base-300">
-        {entries.map(entry => (
-          <div key={entry.name.toLowerCase()} className="py-4">
-            <div className="font-semibold text-[15px] text-primary">
-              {entry.name}
-            </div>
-            {entry.phone && (
-              <div className="text-xs text-base-content/45 mb-1.5">
-                {formatPhone(entry.phone)}
-              </div>
-            )}
-            <div className="space-y-0.5 mt-1">
-              {entry.shifts.map((s, i) => (
-                <div key={i} className="text-sm text-base-content/65 pl-2.5">
-                  {fmtLong(s.date)} · {s.shiftLabel}
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
+      <VolunteerList volunteers={volunteers} />
     </div>
   );
 }

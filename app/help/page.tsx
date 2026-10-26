@@ -30,6 +30,7 @@ export default function HelpPage() {
       <section>
         <h3 className="font-display text-lg text-primary mb-1">A note on phone numbers</h3>
         <p>Just type your number as you normally would — with or without spaces. For example, either <code className="bg-base-200 px-1 rounded text-sm">07700 123456</code> or <code className="bg-base-200 px-1 rounded text-sm">07700123456</code> is fine. If there is a reason that you cannot provide a phone number, then please type <em>&lsquo;none&rsquo;</em> or <em>&lsquo;N/A&rsquo;</em> or something similar.</p>
+        <p className="mt-2">Phone numbers are not shown on the public pages. Members can see them on the <strong>Contacts</strong> tab, using the Exhibitors&apos; password.</p>
       </section>
 
       <section>

@@ -46,6 +46,10 @@ AUTH_GOOGLE_SECRET="your_google_oauth_client_secret"
 # Comma-separated list of emails allowed to access settings/admin areas
 ALLOWED_EMAILS="email1@gmail.com,email2@gmail.com"
 
+# Password that unlocks the Contacts tab (volunteer phone numbers).
+# Use the Exhibitors' password; matching ignores case and spaces at the ends.
+CONTACTS_PASSWORD="exhibitors_password"
+
 # --- Google Sheets API (For Database) ---
 GOOGLE_SERVICE_ACCOUNT_EMAIL="your-service-account@your-project.iam.gserviceaccount.com"
 # Note: The private key MUST be wrapped in quotes and contain \n characters for newlines

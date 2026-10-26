@@ -359,6 +359,9 @@ export default function BookAShift({ exhibition, bookings }: Props) {
                 required
                 autoComplete="tel"
               />
+              <p className="text-xs text-base-content/55 mt-1.5">
+                Only shown to members, on the password-protected Contacts tab.
+              </p>
             </div>
 
             <div className="flex gap-2">

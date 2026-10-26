@@ -5,7 +5,7 @@ import { listBookings, createBooking, deleteBooking } from "@/lib/bookings";
 import { SHIFTS, MAX_PER_SLOT } from "@/lib/shifts";
 import { formatPhone } from "@/lib/format";
 
-const ALL_PATHS = ["/", "/overview", "/booked"] as const;
+const ALL_PATHS = ["/", "/overview", "/booked", "/contacts"] as const;
 
 function revalidateAll() {
   ALL_PATHS.forEach(p => revalidatePath(p));
