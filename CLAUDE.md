@@ -1,7 +1,8 @@
 # Welland Valley Art Society — Rota
 
 A Next.js (App Router) volunteer-stewarding rota for the Welland Valley Art
-Society, hosted on Vercel. Data lives in a Google Sheet, read/written only from
+Society, hosted on Netlify (site `wvas-ex-rota`, WVASadmin account; pushes to
+`main` deploy automatically). Data lives in a Google Sheet, read/written only from
 server code. Auth is Google sign-in restricted to an email allowlist.
 
 ## House rules (always follow these)
@@ -21,8 +22,9 @@ server code. Auth is Google sign-in restricted to an email allowlist.
 
 ## Project map
 
-- `app/` — routes. `app/page.tsx` (home), `app/settings/page.tsx` (gated CRUD),
-  `app/api/auth/[...nextauth]/route.ts` (Auth.js).
+- `app/` — routes. `app/page.tsx` (home), `book`/`booked`/`overview` (the
+  public booking pages), `contacts` (password-protected phone list), `help`,
+  `app/settings/page.tsx` (gated CRUD), `app/api/auth/[...nextauth]/route.ts` (Auth.js).
 - `components/` — UI. `*-form`/`*-list` are client; header/auth are server.
 - `lib/` — logic + data. `validation.ts`, `allowlist.ts`, `sheet-map.ts` are pure
   and unit-tested. `sheets.ts`, `exhibitions.ts`, `auth.ts` are server-only.
@@ -37,10 +39,5 @@ server code. Auth is Google sign-in restricted to an email allowlist.
 
 ## Environment variables
 
-See `.env.example`. All are server-side. Never commit real values.
-
-## Deferred work
-
-The booking workflow (Book a Shift / Full Overview / Who's Booked) is specified
-in `docs/superpowers/specs/2026-06-06-wvas-rota-rebuild-design.md` and not yet
-built. It reads/writes a `Bookings` tab and needs no sign-in.
+Set on the Netlify site (and `.env.local` for local dev). All are server-side.
+Never commit real values — the repo is public.
