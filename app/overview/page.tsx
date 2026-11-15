@@ -74,8 +74,8 @@ export default async function OverviewPage() {
           <tbody>
             {dates.map((d, idx) => {
               const dk     = isoDate(d);
-              const sp     = getSpecialDay(d, active.startDate);
-              const closed = isDayClosed(d, active.startDate);
+              const sp     = getSpecialDay(d, active);
+              const closed = isDayClosed(d, active);
               const rowBg  = idx % 2 === 0 ? "bg-white" : "bg-base-100";
 
               return (
@@ -103,7 +103,7 @@ export default async function OverviewPage() {
                         </td>
                       ))
                     : SHIFTS.map(shift => {
-                        const slotSp  = getShiftSpecialDay(d, active.startDate, shift.id);
+                        const slotSp  = getShiftSpecialDay(d, active, shift.id);
                         const noBook  = slotSp?.noBook ?? false;
                         const slotNote = slotSp?.note ?? null;
                         const booked  = getSlot(dk, shift.id);
@@ -114,6 +114,12 @@ export default async function OverviewPage() {
                             className={`px-3.5 py-2 border-l border-base-200
                                         ${rowBg} align-top`}
                           >
+                            {slotNote && !noBook && (
+                              <div className="text-[11px] font-semibold text-accent
+                                              italic mb-0.5">
+                                {slotNote}
+                              </div>
+                            )}
                             {noBook ? (
                               <span className="text-xs text-base-content/45 italic">
                                 {slotNote}
@@ -140,12 +146,6 @@ export default async function OverviewPage() {
                                 {booked.length >= REQUIRED_PER_SLOT && booked.length < MAX_PER_SLOT && (
                                   <div className="text-[11px] text-base-content/35 italic mt-0.5">
                                     Third Stewarding Slot Available
-                                  </div>
-                                )}
-                                {slotNote && !noBook && (
-                                  <div className="text-[11px] text-base-content/45
-                                                  italic mt-0.5">
-                                    {slotNote}
                                   </div>
                                 )}
                               </>

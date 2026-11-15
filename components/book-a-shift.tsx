@@ -128,8 +128,8 @@ export default function BookAShift({ exhibition, bookings }: Props) {
             <div className="flex flex-wrap gap-1.5">
               {week.map(d => {
                 const dk     = isoDate(d);
-                const closed = isDayClosed(d, exhibition.startDate);
-                const sp     = getSpecialDay(d, exhibition.startDate);
+                const closed = isDayClosed(d, exhibition);
+                const sp     = getSpecialDay(d, exhibition);
 
                 if (closed) {
                   return (
@@ -151,7 +151,7 @@ export default function BookAShift({ exhibition, bookings }: Props) {
                   (a, s) => a + getSlot(dk, s.id).length, 0
                 );
                 const bookableShifts = SHIFTS.filter(s =>
-                  !getShiftSpecialDay(d, exhibition.startDate, s.id)?.noBook
+                  !getShiftSpecialDay(d, exhibition, s.id)?.noBook
                 );
                 const requiredTotal = bookableShifts.length * REQUIRED_PER_SLOT;
                 const maxTotal      = bookableShifts.length * MAX_PER_SLOT;
@@ -197,7 +197,7 @@ export default function BookAShift({ exhibition, bookings }: Props) {
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {SHIFTS.map(shift => {
-                const slotSp  = getShiftSpecialDay(d, exhibition.startDate, shift.id);
+                const slotSp  = getShiftSpecialDay(d, exhibition, shift.id);
                 const noBook  = slotSp?.noBook ?? false;
                 const slotNote = slotSp?.note ?? null;
 

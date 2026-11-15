@@ -4,9 +4,14 @@
  * Intentionally NOT server-only so client components (the interactive shift
  * picker) can import the pure date helpers alongside server components.
  *
- * SPECIAL_DAYS is currently hard-coded for the Autumn 2026 exhibition (offsets
- * from its start date). Per-exhibition special-day configuration is a planned
- * future enhancement.
+ * Special days follow the standard WVAS exhibition pattern and are worked out
+ * from each exhibition's own start/end dates (see specialDayEntries):
+ *   - start date (a Monday): Hanging Day, no booking
+ *   - day after the start (a Tuesday): evening slot is the Private Viewing
+ *   - every Sunday: closed
+ *   - last Saturday: Customer Collection from 4:00pm (evening slot)
+ *   - end date (a Monday): morning slot is collection of unsold work; the
+ *     afternoon and evening slots are Exhibition Closed, no booking
  */
 
 export type SpecialDayClosed = { type: "closed"; label: string };
@@ -18,22 +23,39 @@ export type SpecialDaySlotNote = {
 };
 export type SpecialDay = SpecialDayClosed | SpecialDaySlotNote;
 
-/**
- * Day-offset → special rule. Offset 0 = startDate of the exhibition.
- * Currently meaningful only when the exhibition starts on 2026-09-28.
- */
-export const SPECIAL_DAYS: Record<number, SpecialDay | SpecialDay[]> = {
-  0: [
-    { type: "slot-note", shiftId: "s1", note: "Hanging Day", noBook: true },
-    { type: "slot-note", shiftId: "s2", note: "Hanging Day", noBook: true },
-    { type: "slot-note", shiftId: "s3", note: "Closed",      noBook: true },
-  ],
-  1:  { type: "slot-note", shiftId: "s3", note: "Private View – no booking", noBook: true },
-  6:  { type: "closed",    label: "Closed" },
-  13: { type: "closed",    label: "Closed" },
-  19: { type: "slot-note", shiftId: "s3", note: "Customer Collection from 4:00pm" },
-  20: { type: "closed",    label: "Closed" },
-};
+/** The exhibition dates the special-day rules are worked out from. */
+export type ExhibitionDates = { startDate: string; endDate: string };
+
+/** All special-day rules that apply to date `d` of the exhibition `ex`. */
+export function specialDayEntries(d: Date, ex: ExhibitionDates): SpecialDay[] {
+  const offset    = dayOffset(d, ex.startDate);
+  const fromEnd   = dayOffset(new Date(ex.endDate + "T12:00:00"), isoDate(d));
+  const isSunday  = d.getDay() === 0;
+  const isLastSat = d.getDay() === 6 && fromEnd >= 0 && fromEnd < 7;
+
+  if (offset === 0) {
+    return [
+      { type: "slot-note", shiftId: "s1", note: "Hanging Day", noBook: true },
+      { type: "slot-note", shiftId: "s2", note: "Hanging Day", noBook: true },
+      { type: "slot-note", shiftId: "s3", note: "Closed",      noBook: true },
+    ];
+  }
+  if (fromEnd === 0) {
+    return [
+      { type: "slot-note", shiftId: "s1", note: "Collection of unsold work" },
+      { type: "slot-note", shiftId: "s2", note: "Exhibition Closed", noBook: true },
+      { type: "slot-note", shiftId: "s3", note: "Exhibition Closed", noBook: true },
+    ];
+  }
+  if (isSunday) return [{ type: "closed", label: "Closed" }];
+  if (offset === 1) {
+    return [{ type: "slot-note", shiftId: "s3", note: "Private Viewing" }];
+  }
+  if (isLastSat) {
+    return [{ type: "slot-note", shiftId: "s3", note: "Customer Collection from 4:00pm" }];
+  }
+  return [];
+}
 
 /** All dates (inclusive) from startDate to endDate. */
 export function getExhibitionDates(startDate: string, endDate: string): Date[] {
@@ -52,25 +74,17 @@ export function dayOffset(d: Date, startDate: string): number {
   return Math.round((d.getTime() - start.getTime()) / 86_400_000);
 }
 
-export function getSpecialDay(d: Date, startDate: string): SpecialDay | null {
-  const entry = SPECIAL_DAYS[dayOffset(d, startDate)];
-  if (!entry) return null;
-  if (Array.isArray(entry)) return (entry.find(e => e.type === "closed") as SpecialDayClosed) ?? null;
-  return entry;
+export function getSpecialDay(d: Date, ex: ExhibitionDates): SpecialDayClosed | null {
+  const closed = specialDayEntries(d, ex).find(e => e.type === "closed");
+  return (closed as SpecialDayClosed) ?? null;
 }
 
-export function isDayClosed(d: Date, startDate: string): boolean {
-  const entry = SPECIAL_DAYS[dayOffset(d, startDate)];
-  if (!entry) return false;
-  const entries = Array.isArray(entry) ? entry : [entry];
-  return entries.some(e => e.type === "closed");
+export function isDayClosed(d: Date, ex: ExhibitionDates): boolean {
+  return specialDayEntries(d, ex).some(e => e.type === "closed");
 }
 
-export function getShiftSpecialDay(d: Date, startDate: string, shiftId: string): SpecialDaySlotNote | null {
-  const entry = SPECIAL_DAYS[dayOffset(d, startDate)];
-  if (!entry) return null;
-  const entries = Array.isArray(entry) ? entry : [entry];
-  const match = entries.find(e => e.type === "slot-note" && e.shiftId === shiftId);
+export function getShiftSpecialDay(d: Date, ex: ExhibitionDates, shiftId: string): SpecialDaySlotNote | null {
+  const match = specialDayEntries(d, ex).find(e => e.type === "slot-note" && e.shiftId === shiftId);
   return (match as SpecialDaySlotNote) ?? null;
 }
 

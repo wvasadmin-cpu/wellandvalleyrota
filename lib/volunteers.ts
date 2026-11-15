@@ -1,9 +1,8 @@
 import {
   getExhibitionDates,
-  getSpecialDay,
+  getShiftSpecialDay,
   isDayClosed,
   isoDate,
-  type SpecialDaySlotNote,
 } from "./rota-config";
 import { SHIFTS } from "./shifts";
 import type { Booking, Exhibition } from "./types";
@@ -25,15 +24,10 @@ export function listVolunteers(
   const people: Record<string, Volunteer> = {};
 
   getExhibitionDates(exhibition.startDate, exhibition.endDate).forEach(d => {
-    if (isDayClosed(d, exhibition.startDate)) return;
+    if (isDayClosed(d, exhibition)) return;
     const dk = isoDate(d);
     SHIFTS.forEach(shift => {
-      const sp = getSpecialDay(d, exhibition.startDate);
-      if (
-        sp?.type === "slot-note" &&
-        sp.shiftId === shift.id &&
-        (sp as SpecialDaySlotNote).noBook
-      ) return;
+      if (getShiftSpecialDay(d, exhibition, shift.id)?.noBook) return;
 
       bookings
         .filter(b => b.date === dk && b.shiftId === shift.id)
