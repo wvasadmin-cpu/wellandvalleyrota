@@ -3,14 +3,10 @@ import { listBookings } from "@/lib/bookings";
 import { listVolunteers } from "@/lib/volunteers";
 import { hasContactsAccess } from "@/lib/contacts-access";
 import { lockContactsAction } from "@/actions/contacts";
-import { isHoldingNow } from "@/lib/holding";
-import HoldingPage from "@/components/holding-page";
 import ContactsUnlock from "@/components/contacts-unlock";
 import VolunteerList from "@/components/volunteer-list";
 
 export default async function ContactsPage() {
-  if (await isHoldingNow()) return <HoldingPage />;
-
   // Nothing below is read or sent to the browser until the password is in.
   if (!(await hasContactsAccess())) return <ContactsUnlock />;
 

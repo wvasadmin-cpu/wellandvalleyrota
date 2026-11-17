@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { listBookings, createBooking, deleteBooking } from "@/lib/bookings";
 import { SHIFTS, MAX_PER_SLOT } from "@/lib/shifts";
 import { formatPhone } from "@/lib/format";
+import { bookingOpensLabel } from "@/lib/holding";
 
 const ALL_PATHS = ["/", "/overview", "/booked", "/contacts"] as const;
 
@@ -23,6 +24,9 @@ export async function bookShiftAction(
   if (!name)  return { error: "Please enter your name." };
   if (!phone) return { error: "Please enter your phone number." };
   if (!SHIFTS.find(s => s.id === shiftId)) return { error: "Invalid shift." };
+
+  const opens = await bookingOpensLabel();
+  if (opens) return { error: `Bookings open on ${opens}.` };
 
   // Re-read the slot before writing to guard against concurrent bookings.
   const bookings  = await listBookings(exhibitionId);

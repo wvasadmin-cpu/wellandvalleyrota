@@ -18,9 +18,11 @@ import type { Exhibition, Booking } from "@/lib/types";
 interface Props {
   exhibition: Exhibition;
   bookings:   Booking[];
+  /** Set before bookings open: the grid is shown but Sign up is disabled. */
+  opensLabel?: string | null;
 }
 
-export default function BookAShift({ exhibition, bookings }: Props) {
+export default function BookAShift({ exhibition, bookings, opensLabel }: Props) {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [pendingBooking, setPendingBooking] = useState<{
     date: string; shiftId: string; shiftLabel: string;
@@ -280,7 +282,12 @@ export default function BookAShift({ exhibition, bookings }: Props) {
                         </div>
 
                         {/* Sign-up / full indicator */}
-                        {spaces > 0 ? (
+                        {opensLabel ? (
+                          <div className="bg-base-200 text-base-content/60 text-center
+                                          text-xs font-semibold py-2 tracking-wide">
+                            Booking opens {opensLabel}
+                          </div>
+                        ) : spaces > 0 ? (
                           <button
                             onClick={() =>
                               openBookingModal(selectedDate, shift.id, shift.label)

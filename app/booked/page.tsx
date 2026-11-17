@@ -1,13 +1,9 @@
 import { listExhibitions, getActiveExhibition } from "@/lib/exhibitions";
 import { listBookings } from "@/lib/bookings";
 import { listVolunteers } from "@/lib/volunteers";
-import { isHoldingNow } from "@/lib/holding";
-import HoldingPage from "@/components/holding-page";
 import VolunteerList from "@/components/volunteer-list";
 
 export default async function BookedPage() {
-  if (await isHoldingNow()) return <HoldingPage />;
-
   const exhibitions = await listExhibitions();
   const active      = getActiveExhibition(exhibitions);
 

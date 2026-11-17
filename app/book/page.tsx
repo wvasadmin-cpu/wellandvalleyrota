@@ -1,12 +1,10 @@
 import { listExhibitions, getActiveExhibition } from "@/lib/exhibitions";
 import { listBookings } from "@/lib/bookings";
-import { isHoldingNow } from "@/lib/holding";
-import HoldingPage from "@/components/holding-page";
+import { bookingOpensLabel } from "@/lib/holding";
+import BookingNotice from "@/components/booking-notice";
 import BookAShift from "@/components/book-a-shift";
 
 export default async function BookPage() {
-  if (await isHoldingNow()) return <HoldingPage />;
-
   const exhibitions = await listExhibitions();
   const active      = getActiveExhibition(exhibitions);
 
@@ -25,5 +23,11 @@ export default async function BookPage() {
 
   // Phone numbers stay on the server — they're only shown on the Contacts tab.
   const bookings = (await listBookings(active.id)).map(b => ({ ...b, phone: "" }));
-  return <BookAShift exhibition={active} bookings={bookings} />;
+  const opens    = await bookingOpensLabel();
+  return (
+    <>
+      {opens && <BookingNotice opens={opens} />}
+      <BookAShift exhibition={active} bookings={bookings} opensLabel={opens} />
+    </>
+  );
 }

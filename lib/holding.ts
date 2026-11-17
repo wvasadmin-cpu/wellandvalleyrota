@@ -1,9 +1,16 @@
+import "server-only";
 import { auth } from "@/lib/auth";
+import { getBookingOpens } from "@/lib/entry-settings";
+import { bookingIsOpen } from "@/lib/booking-window";
 
-// Booking opens on this date. Change this for each new exhibition.
-export const BOOKING_OPENS = new Date("2026-08-23T00:00:00");
+// Before bookings open, the rota is shown read-only so members can see the
+// days and shifts and pencil dates in. Signed-in committee members can still
+// book early. The opening day is "Entries Open On" in Entry Form Settings.
 
-export async function isHoldingNow(): Promise<boolean> {
+/** Null when bookings are open; otherwise the wording of the day they open. */
+export async function bookingOpensLabel(): Promise<string | null> {
+  const opens = await getBookingOpens();
+  if (bookingIsOpen(opens?.on)) return null;
   const session = await auth();
-  return new Date() < BOOKING_OPENS && !session?.user;
+  return session?.user ? null : opens!.label;
 }

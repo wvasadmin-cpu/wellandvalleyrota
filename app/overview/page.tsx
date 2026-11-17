@@ -11,12 +11,10 @@ import {
 } from "@/lib/rota-config";
 import { SHIFTS, MAX_PER_SLOT, REQUIRED_PER_SLOT } from "@/lib/shifts";
 import type { Booking } from "@/lib/types";
-import { isHoldingNow } from "@/lib/holding";
-import HoldingPage from "@/components/holding-page";
+import { bookingOpensLabel } from "@/lib/holding";
+import BookingNotice from "@/components/booking-notice";
 
 export default async function OverviewPage() {
-  if (await isHoldingNow()) return <HoldingPage />;
-
   const exhibitions = await listExhibitions();
   const active      = getActiveExhibition(exhibitions);
 
@@ -32,6 +30,7 @@ export default async function OverviewPage() {
   }
 
   const bookings = await listBookings(active.id);
+  const opens    = await bookingOpensLabel();
   const dates    = getExhibitionDates(active.startDate, active.endDate);
 
   function getSlot(dateKey: string, shiftId: string): Booking[] {
@@ -40,6 +39,7 @@ export default async function OverviewPage() {
 
   return (
     <div>
+      {opens && <BookingNotice opens={opens} />}
       <h2 className="font-display text-2xl text-primary mb-1">
         Full Rota Overview
       </h2>

@@ -1,15 +1,9 @@
 import Image from "next/image";
+import { getBannerDates } from "@/lib/entry-settings";
 
-const EXHIBITION_DATES = [
-  { label: "Entry Opens", value: "Sun 23 Aug" },
-  { label: "Entry Closes", value: "Thurs 24 Sept" },
-  { label: "Hand-In", value: "Mon 28 Sep · 9:30–10:30am" },
-  { label: "Private Preview", value: "Tue 29 Sep" },
-  { label: "Exhibition Dates", value: "29 Sep – 17 Oct" },
-  { label: "Collect Unsold Work", value: "Mon 19 Oct · 9am–12noon" },
-];
+export default async function SiteHeader() {
+  const dates = await getBannerDates();
 
-export default function SiteHeader() {
   return (
     <header className="bg-primary border-b-[3px] border-secondary">
       <div className="max-w-7xl mx-auto px-6 py-5 flex items-center gap-5">
@@ -30,16 +24,16 @@ export default function SiteHeader() {
           </h1>
         </div>
       </div>
-      <div
+      {dates.length > 0 && <div
         className="border-t border-primary-content/10"
         style={{ background: "var(--wvas-green-mid)" }}
       >
         <div className="max-w-7xl mx-auto flex flex-wrap">
-          {EXHIBITION_DATES.map((d, i) => (
+          {dates.map((d, i) => (
             <div
               key={d.label}
               className={`px-3 py-2 flex-1 basis-1/2 sm:basis-auto min-w-0 ${
-                i < EXHIBITION_DATES.length - 1 ? "border-r border-primary-content/10" : ""
+                i < dates.length - 1 ? "border-r border-primary-content/10" : ""
               }`}
             >
               <span className="block text-[9px] tracking-[0.10em] uppercase text-secondary mb-0.5 whitespace-nowrap">
@@ -51,7 +45,7 @@ export default function SiteHeader() {
             </div>
           ))}
         </div>
-      </div>
+      </div>}
     </header>
   );
 }
