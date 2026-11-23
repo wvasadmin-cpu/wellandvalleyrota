@@ -13,6 +13,7 @@ const SECTIONS = [
   ] },
   { group: "Artwork sales", items: [
     { id: "payment", label: "Taking payment" },
+    { id: "card", label: "Card payments" },
     { id: "invoice-book", label: "Sales Invoice Book" },
     { id: "after-sale", label: "After the sale" },
     { id: "collection", label: "Collection of sold work" },
@@ -143,6 +144,16 @@ export default function StewardingGuidePage() {
             <li>When a customer pays the balance on collection, add it to their existing order in the Sales Invoice Book.</li>
             <li>Accepted payments are cash, credit card, BACS or cheque. Cheques must be made payable to <em>Welland Valley Art Society</em>.</li>
           </Bullets>
+        </Section>
+
+        <Section id="card" title="Card payments" who="SumUp Solo">
+          <Steps>
+            <li>Press the button on the right side to wake the reader.</li>
+            <li>Type the amount (the full price or the 20% deposit) and press <strong>Charge</strong>.</li>
+            <li>The buyer taps their card or phone, or inserts their card and enters their PIN.</li>
+            <li>Wait for the <strong>green tick</strong>. Skip the receipt option, because the buyer gets the yellow copy from the Sales Invoice Book.</li>
+          </Steps>
+          <p className="mt-3"><strong>If the payment fails,</strong> ask for another way to pay (cash, cheque or BACS), for the full amount or the deposit as usual.</p>
         </Section>
 
         <Section id="invoice-book" title="Filling in the Sales Invoice Book">
