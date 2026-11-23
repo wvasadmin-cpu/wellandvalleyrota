@@ -26,6 +26,7 @@ const TABS = [
   { id: "booked", label: "Who's Booked", href: "/booked" },
   { id: "contacts", label: "Contacts 🔒", href: "/contacts" },
   { id: "help", label: "How to Use", href: "/help" },
+  { id: "stewarding", label: "Stewarding Guide", href: "/stewarding" },
   { id: "settings", label: "Settings", href: "/settings", requireAuthentication: true, hideOnMobile: true },
 ];
 
