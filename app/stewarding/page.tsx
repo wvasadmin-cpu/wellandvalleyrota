@@ -127,7 +127,6 @@ export default function StewardingGuidePage() {
           <Bullets>
             <li>Put all money collected during the day, together with the Daily Sales Receipts sheet, in the cash box.</li>
             <li>Leave the cash box and the card machine (turned off) with the Arts Centre front office for collection by the Treasurer.</li>
-            <li>Bring the noticeboards back into the gallery and place them behind the stewards&apos; desk.</li>
             <li>Bolt the gallery door and tell Arts Centre staff you are leaving, so the alarms can be set.</li>
           </Bullets>
         </Section>
