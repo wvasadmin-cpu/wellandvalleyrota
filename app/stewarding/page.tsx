@@ -107,7 +107,6 @@ export default function StewardingGuidePage() {
             <li>Collect the cash box and card machine from the Arts Centre front office. Inside are the previous day&apos;s receipts (credit card receipts, cash and cheques) and the Daily Sales Receipts sheet. The Treasurer or another committee member collects these for banking.</li>
             <li>Secure the cash box to the stewards&apos; table with its chain.</li>
             <li>Take a new Daily Sales Receipts sheet from the pack and write the date in the top right-hand corner.</li>
-            <li>Fix the wooden exhibition noticeboards to the wall hooks either side of the Arts Centre entrance.</li>
           </Bullets>
         </Section>
 
